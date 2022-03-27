@@ -15,7 +15,12 @@ const db = mysql.createConnection({
 
 });
 //html, css link
-const publicDirectory = path.join(__dirname, './.public');
+const publicDirectory = path.join(__dirname, '/public');
+app.use(express.static(publicDirectory));
+//parse url encoded bodies
+app.use(express.urlencoded({ extended:false }));
+//parse JSON bodies
+app.use(express.json());
 
 app.set('view engine', 'hbs');
 
@@ -26,12 +31,11 @@ db.connect( (error) => {
         console.log('mysql connected...')
     }
 })
+//link routes
+app.use('/', require('./routes/pages'));
+app.use('/auth', require('./routes/auth'));
 
 
-app.get('/', (req, res) => {
-    res.send('<h1>Home page</h1>')
-});
-
-app.listen(5001, () => { 
+app.listen(5002, () => { 
     console.log('Server started on port 5001');
 })
